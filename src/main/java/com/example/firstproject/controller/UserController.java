@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
 @Controller
-public class MemberController {
+public class UserController {
     private final UserService loginService;
 
-    public MemberController(UserService userService){
+    public UserController(UserService userService){
         this.loginService = userService;
     }
 
