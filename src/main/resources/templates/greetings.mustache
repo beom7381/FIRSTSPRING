@@ -5,6 +5,14 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>{{loginRequestDto.loginId}}님 반갑습니다.</h1>
+    <h1>{{loginid}}님 반갑습니다.</h1>
+    <div>
+        <form action="/logout" method="POST">
+            <button type="submit">로그아웃</button>
+        </form>
+        <form action="/article/list" method="GET">
+            <button type="submit">게시글목록</button>
+        </form>
+    </div>
 </body>
 </html>
