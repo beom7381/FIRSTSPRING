@@ -19,7 +19,7 @@ public class FirstController {
         String loginid = (String)session.getAttribute("login_id");
 
         if(loginid != null){
-            model.addAttribute("loginid", loginid);
+            model.addAttribute("loginId", loginid);
 
             return "greetings";
         }

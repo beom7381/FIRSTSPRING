@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,45 +22,60 @@ public class ArticleController {
     private ArticleMapper articleMapper;
 
     @GetMapping("/article/list")
-    public String articleList(Model model, @RequestParam(value = "page", required = false) String page) {
+    public String articleList(Model model) {
         model.addAttribute("articleList", articleService.getArticleList());
 
         return "article/list";
     }
 
-    @GetMapping("/article/view")
-    public String viewArticle(Model model, @RequestParam(value = "id", required = false) Long articleId) {
-        log.info(articleId.toString());
+    @GetMapping("/article/view/{id}")
+    public String viewArticle(Model model, HttpSession session, @PathVariable(value = "id") Long articleId) {
+        var article = articleService.readArticle(articleId);
+        String loginId = (String) session.getAttribute("login_id");
 
-        if(articleId != null){
-            model.addAttribute("article", articleService.readArticle(articleId));
+        if (article != null) {
+            if(loginId != null && loginId.equals(article.getLoginId())) {
+                model.addAttribute("isMyArticle", true);
+            }
+
+            model.addAttribute("article", article);
 
             return "article/view";
-        }
-        else{
+        } else {
             return "redirect:/article/list";
         }
     }
 
     @GetMapping("/article/write")
-    public String writeArticle(Model model, @RequestParam(value = "id", required = false) String id) {
-        Long articleId;
-
-        try {
-            articleId = Long.parseLong(id);
-        } catch (Exception err) {
-            articleId = 0L;
-        }
-
-        if (articleId != 0) {
+    public String writeArticle(Model model, @RequestParam(value = "articleId", required = false) Long articleId) {
+        if (articleId != null && articleId != 0L) {
             var articleDto = articleService.readArticle(articleId);
 
-            model.addAttribute("articleDto", articleDto);
+            model.addAttribute("article", articleDto);
         } else {
-            model.addAttribute("articleDto", new ArticleDto(0L, "", "", ""));
+            model.addAttribute("article", new ArticleDto(0L, "", "", ""));
         }
 
         return "article/write";
+    }
+
+    @PostMapping("/article/edit")
+    public String editArticle(Model model, HttpSession session, @RequestParam(value = "id") Long articleId) {
+        String loginId = (String) session.getAttribute("login_id");
+
+        if (loginId == null) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
+            return "member/login";
+        }
+
+        ArticleDto articleDto = articleService.readArticle(articleId);
+
+        if (articleDto != null) {
+            model.addAttribute("article", articleDto);
+            return "article/write";
+        } else {
+            return "redirect:/article/list";
+        }
     }
 
     @PostMapping("/article/save")
@@ -73,12 +89,40 @@ public class ArticleController {
 
         articleDto.setLoginId(loginId);
 
-        Long resultId = articleService.saveArticle(articleDto);
-        if (resultId != 0L) {
-            return "redirect:/article/view?id=" + resultId;
+        if(articleDto.getArticleId() == 0){
+            articleDto.setArticleId(null);
         }
-        else{
+
+        Long resultId = articleService.saveArticle(articleDto);
+
+        if (resultId != 0L) {
+            model.addAttribute("article", articleService.readArticle(resultId));
+            return "redirect:/article/view/" + resultId;
+        } else {
             return "/article/list";
         }
+    }
+
+    @PostMapping("/article/delete")
+    public String deleteArticle(Model model, HttpSession session, @RequestParam(value = "id", required = false) Long articleId) {
+        String loginId = (String) session.getAttribute("login_id");
+
+        if (loginId == null) {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
+            return "member/login";
+        }
+
+        if (articleId != null) {
+            ArticleDto articleDto = articleService.readArticle(articleId);
+
+            if (articleDto.getLoginId().equals(loginId)) {
+                articleService.deleteArticle(articleId);
+            } else {
+                model.addAttribute("errorMessage", "권한이 없습니다.");
+                return "article/view";
+            }
+        }
+
+        return "redirect:/article/list";
     }
 }

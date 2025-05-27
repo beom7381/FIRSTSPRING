@@ -1,18 +1,29 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <title>환영합니다</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body, html {
+          height: 100%;
+          background-color: #f8f9fa;
+        }
+        .welcome-container {
+          height: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{loginid}}님 반갑습니다.</h1>
-    <div>
-        <form action="/logout" method="POST">
-            <button type="submit">로그아웃</button>
-        </form>
-        <form action="/article/list" method="GET">
-            <button type="submit">게시글목록</button>
+<div class="container d-flex justify-content-center align-items-center welcome-container">
+    <div class="text-center p-4 bg-white rounded shadow" style="max-width: 400px; width: 100%;">
+        <h2 class="mb-4">환영합니다, {{loginId}}님!</h2>
+        <a href="/article/list" class="btn btn-primary btn-lg w-100">게시판으로 이동</a>
+        <form action="/logout" method="post">
+            <button type="submit" class="btn btn-primary btn-lg w-100">로그아웃</button>
         </form>
     </div>
+</div>
 </body>
 </html>

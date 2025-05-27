@@ -31,6 +31,7 @@ public class ArticleService {
 
             return articleRepository.save(article).getArticleId();
         } catch (Exception err) {
+            err.printStackTrace();
             return 0L;
         }
     }
@@ -38,6 +39,22 @@ public class ArticleService {
     public ArticleDto readArticle(Long articleId) {
         Article article = articleRepository.findByArticleId(articleId);
 
-        return articleMapper.toDto(article);
+        if (article == null) {
+            return null;
+        } else {
+            return articleMapper.toDto(article);
+        }
+    }
+
+    public boolean deleteArticle(Long articleId) {
+        Article article = articleRepository.findByArticleId(articleId);
+
+        if (article != null) {
+            articleRepository.delete(article);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

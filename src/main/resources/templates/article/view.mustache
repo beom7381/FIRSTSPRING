@@ -1,33 +1,57 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>^^</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body, html {
+          background-color: #f8f9fa;
+          min-height: 100vh;
+        }
+        .view-container {
+          max-width: 800px;
+          margin: 3rem auto;
+          background: white;
+          padding: 2rem 2.5rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        .content {
+          white-space: pre-wrap;
+          font-size: 1.1rem;
+          line-height: 1.5;
+          margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">글번호</th>
-            <th scope="col">작성자</th>
-            <th scope="col">제목</th>
-            <th scope="col">내용</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#article}}
-            <tr>
-                <th>{{articleId}}</th>
-                <td>{{loginId}}</td>
-                <td>{{title}}</td>
-                <td>{{content}}</td>
-            </tr>
-        {{/article}}
-        </tbody>
-    </table>
-
-    <a href="/article/list">목록으로 돌아가기</a>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<div class="view-container">
+    {{#article}}
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{title}}</h2>
+            <div>
+                <a href="/article/list" class="btn btn-outline-secondary me-2">목록으로</a>
+                {{#isMyArticle}}
+                    <form action="/article/edit" method="post">
+                        <input type="hidden" name="id" value="{{articleId}}">
+                        <button type="submit" class="btn btn-outline-secondary me-2">수정</button>
+                    </form>
+                    <form action="/article/delete" method="post">
+                        <input type="hidden" name="id" value="{{articleId}}">
+                        <button type="submit" class="btn btn-outline-danger me-2">삭제</button>
+                    </form>
+                {{/isMyArticle}}
+            </div>
+        </div>
+        <p class="text-muted mb-1">작성자: {{loginId}}</p>
+        <p class="text-muted">글 번호: {{articleId}}</p>
+        <hr/>
+        <div class="content">
+            {{content}}
+        </div>
+    {{/article}}
+</div>
 </body>
 </html>

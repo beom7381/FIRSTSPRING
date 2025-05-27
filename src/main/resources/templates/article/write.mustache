@@ -7,17 +7,17 @@
 </head>
 <body>
     <form class="container" action="/article/save" method="post">
-        <input type="hidden" name="id" value="0">
+        <input type="hidden" name="articleId" value="{{article.articleId}}">
         <div class="mb-3">
             <label class="form-label">제목</label>
-            <input type="text" class="form-control" name="title">
+            <input type="text" class="form-control" name="title" value="{{article.title}}">
         </div>
         <div class="mb-3">
             <label class="form-label">내용</label>
-            <textarea class="form-control" rows="3" name="content"></textarea>
+            <textarea class="form-control" rows="3" name="content">{{article.content}}</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="/article/list">취소</a>
+        <button type="submit" class="btn btn-success">저장</button>
+        <button type="button" onclick="location.href='/article/list'" class="btn btn-danger">취소</button>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
